@@ -8,9 +8,67 @@ datasource db {
 }
 
 model User {
-  id                              String                @id @default(uuid())
-  email                           String?               @unique
-  password                        String?
-  avatar                          String?
-  created_at                      DateTime              @default(now())
+  id         String    @id @default(uuid())
+  email      String?   @unique
+  password   String?
+  avatar     String?
+  created_at DateTime  @default(now())
+  Task       Task[]
+  Comment    Comment[]
+  Vote       Vote[]
+}
+
+model TaskCategory {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  tasks Task[] @relation("TaskCategoryTasks")
+}
+
+model TaskStatus {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  tasks Task[] @relation("TaskStatusTasks")
+}
+
+model Task {
+  id               String       @id @default(uuid())
+  title            String
+  description      String
+  task_category    TaskCategory @relation("TaskCategoryTasks", fields: [task_category_id], references: [id])
+  task_category_id Int
+  task_status      TaskStatus   @relation("TaskStatusTasks", fields: [task_status_id], references: [id])
+  task_status_id   Int
+  user             User         @relation(fields: [user_id], references: [id])
+  user_id          String
+  comments         Comment[]    @relation("TaskComments")
+  votes            Vote[]       @relation("TaskVotes")
+  created_at       DateTime     @default(now())
+  updated_at       DateTime     @updatedAt
+
+  @@index([title])
+  @@index([description])
+}
+
+model Vote {
+  id      String @id @default(uuid())
+  user    User   @relation(fields: [user_id], references: [id])
+  user_id String
+  task    Task   @relation("TaskVotes", fields: [task_id], references: [id])
+  task_id String
+
+  @@unique([user_id, task_id])
+}
+
+model Comment {
+  id                String    @id @default(uuid())
+  text              String
+  task              Task      @relation("TaskComments", fields: [task_id], references: [id])
+  task_id           String
+  user              User      @relation(fields: [user_id], references: [id])
+  user_id           String
+  parent_comment    Comment?  @relation("CommentParent", fields: [parent_comment_id], references: [id])
+  parent_comment_id String
+  child_comments    Comment[] @relation("CommentParent")
+  created_at        DateTime  @default(now())
+  updated_at        DateTime  @updatedAt
 }
