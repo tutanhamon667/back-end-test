@@ -1,8 +1,8 @@
 import Express from 'express';
 import { buildCreate, Create } from './create';
-
+import { buildList, ListTask } from './list';
 import { DeliveryParams } from '@/delivery/types';
-import { createTaskRules } from './rules';
+import { createTaskRules, listTaskRules } from './rules';
 import { createRouteHandler } from '../../routeHandler';
 import { IHandler } from '../types';
 
@@ -10,12 +10,44 @@ type Params = Pick<DeliveryParams, 'task'>;
 
 export type TaskMethods = {
   create: Create;
+  list: ListTask
 
 }
 
-const buildCreateRoutes = (methods: TaskMethods) => {
+const buildTaskRoutes = (methods: TaskMethods) => {
   return (root: Express.Router) => {
     const namespace = Express.Router()
+    
+    /**
+     * @openapi
+     * /task/list:
+     *   post:
+     *     tags: [Task]
+     *     produces:
+     *       - application/json
+     *     requestBody:
+     *       in: body
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             $ref: '#/components/rules/listTaskRules'
+     *     responses:
+     *        200:
+     *           description: Create new task.
+     *           content:
+     *              application/json:
+     *                schema:
+     *                  properties:
+     *                    task:
+     *                      type: array
+     *                      $ref: '#/components/entities/Task'
+     */
+    namespace.post(
+      '/list',
+      listTaskRules,
+      createRouteHandler(methods.list)
+    )
 
     /**
      * @openapi
@@ -52,14 +84,16 @@ const buildCreateRoutes = (methods: TaskMethods) => {
   }
 }
 
-export const buildCreateHandler = (params: Params): IHandler => {
+export const buildTaskHandler = (params: Params): IHandler => {
   const create = buildCreate(params)
+  const list = buildList(params)
 
 
   return {
-    registerRoutes: buildCreateRoutes(
+    registerRoutes: buildTaskRoutes(
       {
-        create
+        create,
+        list
       }
     )
   }

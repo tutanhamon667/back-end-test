@@ -14,7 +14,6 @@ model User {
   avatar     String?
   created_at DateTime  @default(now())
   Task       Task[]
-  Comment    Comment[]
   Vote       Vote[]
 }
 
@@ -40,8 +39,8 @@ model Task {
   task_status_id   Int
   user             User         @relation(fields: [user_id], references: [id])
   user_id          String
-  comments         Comment[]    @relation("TaskComments")
   votes            Vote[]       @relation("TaskVotes")
+  vote_count       Int          @default(0) @map("TaskVotes")
   created_at       DateTime     @default(now())
   updated_at       DateTime     @updatedAt
 
@@ -59,16 +58,3 @@ model Vote {
   @@unique([user_id, task_id])
 }
 
-model Comment {
-  id                String    @id @default(uuid())
-  text              String
-  task              Task      @relation("TaskComments", fields: [task_id], references: [id])
-  task_id           String
-  user              User      @relation(fields: [user_id], references: [id])
-  user_id           String
-  parent_comment    Comment?  @relation("CommentParent", fields: [parent_comment_id], references: [id])
-  parent_comment_id String
-  child_comments    Comment[] @relation("CommentParent")
-  created_at        DateTime  @default(now())
-  updated_at        DateTime  @updatedAt
-}

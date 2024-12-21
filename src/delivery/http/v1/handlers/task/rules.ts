@@ -58,6 +58,50 @@ export const updateTaskhRules = [
   validateSchema
 ];
 
+
+/**
+  * @openapi
+  * components:
+  *   rules:
+  *      listTaskRules:
+  *          headers:
+  *             authorization:
+  *                type: string
+  *          properties:
+  *             skip:
+  *                type: integer
+  *             take:
+  *                type: integer
+  *             orderBy:
+  *                type: object
+  *                properties:
+  *                   task_status_id:
+  *                      type: string
+  *                      default: asc
+  *                   task_category_id:
+  *                      type: string
+  *                      default: asc
+  *                   vote_count:
+  *                      type: string
+  *                      default: asc
+  *             where:
+  *                type: object
+  *                properties:
+  *                   task_status_id:
+  *                      type: integer
+  *                   task_category_id:
+  *                      type: integer
+  * 
+  */
+export const listTaskRules = [
+  check('orderBy').isObject(),
+  check('skip').isNumeric(),
+  check('take').isNumeric(),
+  check('where').isObject(),
+  validateSchema
+];
+
+
 export const getTaskRules = [
   check('id').exists().notEmpty().isUUID(),
   validateSchema

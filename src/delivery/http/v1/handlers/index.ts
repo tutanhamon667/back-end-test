@@ -3,13 +3,16 @@ import { IHandler } from './types'
 import { DeliveryParams } from '@/delivery/types'
 import { buildExampleHandler } from './example'
 import { buildAuthHandler } from './auth'
+import { buildTaskHandler } from './task'
 
 export const buildHandler = (params: DeliveryParams): Express.Router => {
   const router = Express.Router()
 
   const handlers: Array<IHandler> = [
     buildAuthHandler(params),
-    buildExampleHandler(params)
+    buildExampleHandler(params),
+    buildTaskHandler(params),
+    
   ]
 
   for (let i = 0; i < handlers.length; i++){
