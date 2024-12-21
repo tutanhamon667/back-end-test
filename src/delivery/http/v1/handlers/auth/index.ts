@@ -122,8 +122,11 @@ const buildRegisterRoutes = (methods: AuthMethods) => {
      * /auth/me:
      *   get:
      *     tags: [Auth]
-     *     security:
-     *      - bearerAuth: []
+     *     parameters:
+     *     - name: Authorization
+     *       in: header
+     *       required: true
+     *       type: string
      *     produces:
      *       - application/json
      *     responses:

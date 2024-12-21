@@ -12,7 +12,7 @@ export const buildAuthorize = ({auth}: Params): Authorize=>{
       email: req.body.email?.toLowerCase(),
       password: req.body.password,
     });
-
+    res.header('Authorization', `Bearer ${data.accessToken}`)
     return res.status(200).json(data)
   }
 }
