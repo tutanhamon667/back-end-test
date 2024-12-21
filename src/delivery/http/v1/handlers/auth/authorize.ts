@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { DeliveryParams } from '@/delivery/types';
-import { console } from 'node:inspector';
 
 type Params = Pick<DeliveryParams, 'auth'>
 
@@ -8,7 +7,7 @@ export type Authorize = (req: Request, res: Response)=>Promise<Response>
 
 export const buildAuthorize = ({auth}: Params): Authorize=>{
   return async (req, res)=>{
-    console.log(req.body)
+
     const data = await auth.authorize({
       email: req.body.email?.toLowerCase(),
       password: req.body.password,

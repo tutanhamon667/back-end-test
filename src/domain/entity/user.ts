@@ -23,3 +23,7 @@ export interface IUser extends User {}
  *                type: string
  *                format: date
  */
+
+export interface IUserAuth extends User {
+  password: string;
+}
