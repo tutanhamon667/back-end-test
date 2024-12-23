@@ -11,6 +11,8 @@
     "migrate:dev": "dotenv -e .env npx prisma db push",
     "migrate:prod": "npx prisma db push --accept-data-loss",
     "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
     "lint": "eslint ./src --ext .ts"
   },
   "author": "The2Alert",
@@ -23,7 +25,7 @@
     "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
-    "@types/jest": "^29.5.6",
+    "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/module-alias": "^2.0.1",
     "@types/multer": "^1.4.11",

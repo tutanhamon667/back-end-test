@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "es5",
     "module": "commonjs",
+
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "allowSyntheticDefaultImports": true,
@@ -22,7 +23,7 @@
       "@/*": ["./*"],
       "@types": ["./types"]
     },
-    "types": ["@types/node"]
+    "types": ["@types/node", "jest", "@types/jest"]
   },
   "include": [
     "src/**/*",
