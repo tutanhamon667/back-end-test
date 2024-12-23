@@ -34,7 +34,7 @@ const buildTaskRoutes = (methods: TaskMethods) => {
      *             $ref: '#/components/rules/listTaskRules'
      *     responses:
      *        200:
-     *           description: Create new task.
+     *           description: get list of tasks.
      *           content:
      *              application/json:
      *                schema:
