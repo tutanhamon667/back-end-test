@@ -2,7 +2,6 @@ import { Vote } from '@prisma/client';
 
 export interface IVote extends Vote {}
 
-
 /**
  * @openapi
  * components:
