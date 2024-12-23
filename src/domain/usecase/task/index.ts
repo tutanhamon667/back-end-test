@@ -1,18 +1,25 @@
 import { UseCaseParams } from '@/domain/usecase/types';
 import { buildCreate, Create } from './create';
 import { buildList, ListTask } from './list';
+import { buildTaskUCaseGet, TaskGet } from './get';
+import { buildTaskUCaseUpdate, TaskUpdate } from './update';
+import { buildTaskUCaseRemove, TaskRemove } from './remove';
 
-
-export type TaskUseCase = {
+export interface TaskUseCase {
   create: Create;
-  list: ListTask; 
+  list: ListTask;
+  get: TaskGet;
+  update: TaskUpdate;
+  remove: TaskRemove;
 }
 
 export const buildTaskUseCase = (params: UseCaseParams): TaskUseCase => {
-  const create = buildCreate(params);
-  const list = buildList(params);
   return {
-    create,
-    list
-  }
+    create: buildCreate(params),
+    list: buildList(params),
+    get: buildTaskUCaseGet(params),
+    update: buildTaskUCaseUpdate(params),
+    remove: buildTaskUCaseRemove(params),
+  };
 }
+

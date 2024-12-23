@@ -1,4 +1,4 @@
-import { Task } from '@prisma/client';
+import { Prisma, Task } from '@prisma/client';
 
 export interface ITask extends Task {}
 
@@ -38,3 +38,20 @@ export interface ITask extends Task {}
  *                type: string
  *                format: date
  */
+
+
+export type CreateTask = (data: Prisma.TaskCreateArgs) => Promise<ITask>;
+export type GetTask = (id: string) => Promise<ITask | null>;
+
+export type UpdateTask = (id: string, data: Prisma.TaskUpdateArgs['data']) => Promise<ITask>;
+
+export type RemoveTask = (id: string) => Promise<ITask>;
+
+export type FilterTasks = (params: FilterTasksParams) => Promise<ITask[]>;
+
+export type FilterTasksParams = {
+  skip?: number;
+  take?: number;
+  orderBy?: string;
+  where?: Record<string, any>;
+};

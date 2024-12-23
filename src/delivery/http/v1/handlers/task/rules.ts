@@ -50,9 +50,21 @@ export const createTaskRules = [
   *             id:
   *                type: string
   *                format: uuid
+  *             title:
+  *                type: string
+  *             description:
+  *                type: string
+  *             task_status_id:
+  *                type: integer
+  *             task_category_id:
+  *                type: integer
   */
 export const updateTaskhRules = [
   check('id').exists().notEmpty().isUUID(),
+  check('title').exists().isString(),
+  check('description').exists().isString(),
+  check('task_status_id').exists().isInt(),
+  check('task_category_id').exists().isInt(),
   header('authorization').exists().notEmpty().isString(),
   authRequired({}),
   validateSchema
@@ -106,3 +118,26 @@ export const getTaskRules = [
   check('id').exists().notEmpty().isUUID(),
   validateSchema
 ];
+
+/**
+  * @openapi
+  * components:
+  *   rules:
+  *      removeTaskRules:
+  *          required:
+  *             - id
+  *          headers:
+  *             authorization:
+  *                type: string
+  *          properties:
+  *             id:
+  *                type: string
+  *                format: uuid
+  */
+export const removeTaskRules = [
+  check('id').exists().notEmpty().isUUID(),
+  header('authorization').exists().notEmpty().isString(),
+  authRequired({}),
+  validateSchema
+];
+
