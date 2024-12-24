@@ -7,23 +7,13 @@ import {
   buildFilterTasks,
 } from '../tasks';
 import { Prisma } from '@prisma/client';
+import { buildTestAdapter } from '../../../../utils/tests';
 
 describe('Tasks Service', () => {
-  const taskRepository = {
-    create: jest.fn(),
-    get: jest.fn(),
-    update: jest.fn(),
-    remove: jest.fn(),
-    list: jest.fn(),
-  };
+  let testAdapter: Adapter;
 
-  const buildAdapter = () => ({
-    taskRepository,
-    userRepository: {}, // Add this property
-    exampleGateway: {}, // Add this property
-    voteRepository: {}, // Add this property
-    taskCategoryRepository: {}, // Add this property
-    taskStatusRepository: {}, // Add this property
+  beforeEach(() => {
+    testAdapter = buildTestAdapter();
   });
 
   afterEach(() => {
@@ -32,7 +22,7 @@ describe('Tasks Service', () => {
 
   describe('buildCreateTask', () => {
     it('creates a task', async () => {
-      const createTask = buildCreateTask(buildAdapter());
+      const createTask = buildCreateTask(testAdapter);
       const taskData: Prisma.TaskCreateArgs = {
         data: {
           user_id: '01550709-138a-4004-b4ab-329fc46eae6c',
@@ -43,21 +33,21 @@ describe('Tasks Service', () => {
         },
       };
 
-      taskRepository.create.mockResolvedValue({
+      (testAdapter.taskRepository.create as jest.Mock).mockResolvedValue({
         id: '01550709-138a-4004-b4ab-329fc46eaeasc',
         ...taskData.data,
       });
 
       const result = await createTask(taskData);
 
-      expect(taskRepository.create).toHaveBeenCalledWith(taskData);
-      expect(result).toEqual({ id: '1', ...taskData.data });
+      expect(testAdapter.taskRepository.create).toHaveBeenCalledWith(taskData);
+      expect(result).toEqual({ id: '01550709-138a-4004-b4ab-329fc46eaeasc', ...taskData.data });
     });
   });
 
   describe('buildGetTask', () => {
     it('gets a task by id', async () => {
-      const getTask = buildGetTask(buildAdapter());
+      const getTask = buildGetTask(testAdapter);
       const taskId = '1';
       const task = {
         id: taskId,
@@ -65,11 +55,16 @@ describe('Tasks Service', () => {
         description: 'Test Description',
       };
 
-      taskRepository.get.mockResolvedValue(task);
+      // Create a mock implementation for testAdapter.taskRepository.get
+      const getMock = jest.fn();
+      testAdapter.taskRepository.get = getMock;
+
+      // Now you can use mockResolvedValue on the mock implementation
+      getMock.mockResolvedValue(task);
 
       const result = await getTask(taskId);
 
-      expect(taskRepository.get).toHaveBeenCalledWith({
+      expect(getMock).toHaveBeenCalledWith({
         where: { id: { equals: taskId } },
       });
       expect(result).toEqual(task);
@@ -78,36 +73,34 @@ describe('Tasks Service', () => {
 
   describe('buildUpdateTask', () => {
     it('updates a task', async () => {
-      const updateTask = buildUpdateTask(buildAdapter());
+      const updateTask = buildUpdateTask(testAdapter);
       const taskId = '1';
-      const updateData: Prisma.TaskUpdateArgs['data'] = {
+      const updateData: Prisma.TaskUpdateInput = {
         title: 'Updated Task',
       };
-      const updatedTask = { id: taskId, ...updateData };
-
-      taskRepository.update.mockResolvedValue(updatedTask);
+      (testAdapter.taskRepository.update as jest.Mock).mockResolvedValue(updateData);
 
       const result = await updateTask(taskId, updateData);
-
-      expect(taskRepository.update).toHaveBeenCalledWith(
+      expect(testAdapter.taskRepository.update).toHaveBeenCalledWith(
         updateData,
         { id: taskId }
       );
-      expect(result).toEqual(updatedTask);
+
+      expect(result.title).toBe('Updated Task');
     });
   });
 
   describe('buildRemoveTask', () => {
     it('removes a task', async () => {
-      const removeTask = buildRemoveTask(buildAdapter());
+      const removeTask = buildRemoveTask(testAdapter);
       const taskId = '1';
       const removedTask = { id: taskId, title: 'Removed Task' };
 
-      taskRepository.remove.mockResolvedValue(removedTask);
+      (testAdapter.taskRepository.remove as jest.Mock).mockResolvedValue(removedTask);
 
       const result = await removeTask(taskId);
 
-      expect(taskRepository.remove).toHaveBeenCalledWith({
+      expect(testAdapter.taskRepository.remove).toHaveBeenCalledWith({
         where: { id: taskId },
       });
       expect(result).toEqual(removedTask);
@@ -116,11 +109,11 @@ describe('Tasks Service', () => {
 
   describe('buildFilterTasks', () => {
     it('filters tasks', async () => {
-      const filterTasks = buildFilterTasks(buildAdapter());
+      const filterTasks = buildFilterTasks(testAdapter);
       const filterParams = {
         skip: 0,
         take: 10,
-        orderBy: { vote_count: 'desc' },
+        orderBy: { vote_count: 'asc' as Prisma.SortOrder },
         where: { title: 'Test' },
       };
       const tasks = [
@@ -128,11 +121,11 @@ describe('Tasks Service', () => {
         { id: '2', title: 'Test Task 2' },
       ];
 
-      taskRepository.list.mockResolvedValue(tasks);
+      (testAdapter.taskRepository.list as jest.Mock).mockResolvedValue(tasks);
 
       const result = await filterTasks(filterParams);
 
-      expect(taskRepository.list).toHaveBeenCalledWith(filterParams);
+      expect(testAdapter.taskRepository.list).toHaveBeenCalledWith(filterParams);
       expect(result).toEqual(tasks);
     });
   });
