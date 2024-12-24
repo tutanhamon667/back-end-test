@@ -1,6 +1,15 @@
 import { Prisma, Task } from '@prisma/client';
 
-export interface ITask extends Task {}
+export interface ITask extends Task {
+  id: string;
+  user_id: string;
+  title: string;
+  description: string;
+  task_status_id: number;
+  task_category_id: number;
+  updated_at: Date;
+  created_at: Date;
+}
 
 
 /**
@@ -41,17 +50,11 @@ export interface ITask extends Task {}
 
 
 export type CreateTask = (data: Prisma.TaskCreateArgs) => Promise<ITask>;
-export type GetTask = (id: string) => Promise<ITask | null>;
+export type TaskGet = (id: string) => Promise<ITask | null>;
 
-export type UpdateTask = (id: string, data: Prisma.TaskUpdateArgs['data']) => Promise<ITask>;
+export type TaskUpdate = (id: string, data: Prisma.TaskUpdateInput) => Promise<ITask>;
 
-export type RemoveTask = (id: string) => Promise<ITask>;
+export type TaskRemove = (id: string) => Promise<ITask>;
 
-export type FilterTasks = (params: FilterTasksParams) => Promise<ITask[]>;
+export type FilterTasks = (params: Prisma.TaskFindManyArgs) => Promise<ITask[]>;
 
-export type FilterTasksParams = {
-  skip?: number;
-  take?: number;
-  orderBy?: string;
-  where?: Record<string, any>;
-};

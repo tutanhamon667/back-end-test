@@ -1,9 +1,6 @@
 import { Adapter } from '@/domain/types';
 import {
   buildCreateTask,
-  buildGetTask,
-  buildUpdateTask,
-  buildRemoveTask,
   buildFilterTasks,
 } from '../tasks';
 import { Prisma } from '@prisma/client';
@@ -45,67 +42,6 @@ describe('Tasks Service', () => {
     });
   });
 
-  describe('buildGetTask', () => {
-    it('gets a task by id', async () => {
-      const getTask = buildGetTask(testAdapter);
-      const taskId = '1';
-      const task = {
-        id: taskId,
-        title: 'Test Task',
-        description: 'Test Description',
-      };
-
-      // Create a mock implementation for testAdapter.taskRepository.get
-      const getMock = jest.fn();
-      testAdapter.taskRepository.get = getMock;
-
-      // Now you can use mockResolvedValue on the mock implementation
-      getMock.mockResolvedValue(task);
-
-      const result = await getTask(taskId);
-
-      expect(getMock).toHaveBeenCalledWith({
-        where: { id: { equals: taskId } },
-      });
-      expect(result).toEqual(task);
-    });
-  });
-
-  describe('buildUpdateTask', () => {
-    it('updates a task', async () => {
-      const updateTask = buildUpdateTask(testAdapter);
-      const taskId = '1';
-      const updateData: Prisma.TaskUpdateInput = {
-        title: 'Updated Task',
-      };
-      (testAdapter.taskRepository.update as jest.Mock).mockResolvedValue(updateData);
-
-      const result = await updateTask(taskId, updateData);
-      expect(testAdapter.taskRepository.update).toHaveBeenCalledWith(
-        updateData,
-        { id: taskId }
-      );
-
-      expect(result.title).toBe('Updated Task');
-    });
-  });
-
-  describe('buildRemoveTask', () => {
-    it('removes a task', async () => {
-      const removeTask = buildRemoveTask(testAdapter);
-      const taskId = '1';
-      const removedTask = { id: taskId, title: 'Removed Task' };
-
-      (testAdapter.taskRepository.remove as jest.Mock).mockResolvedValue(removedTask);
-
-      const result = await removeTask(taskId);
-
-      expect(testAdapter.taskRepository.remove).toHaveBeenCalledWith({
-        where: { id: taskId },
-      });
-      expect(result).toEqual(removedTask);
-    });
-  });
 
   describe('buildFilterTasks', () => {
     it('filters tasks', async () => {

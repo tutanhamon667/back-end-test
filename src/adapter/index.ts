@@ -1,4 +1,3 @@
-import { buildExampleGateway, ExampleGateway } from './gateway/example';
 import { buildUserRepository, UserRepository } from './repository/user';
 import { buildTaskRepository, TaskRepository } from './repository/task';
 import { AdapterParams } from './types';
@@ -10,7 +9,6 @@ import { TaskStatusRepository } from '@/domain/entity/taskStatus';
 
 export type Adapter = {
   userRepository: UserRepository;
-  exampleGateway: ExampleGateway;
   taskRepository: TaskRepository;
   voteRepository: VoteRepository;
   taskCategoryRepository: TaskCategoryRepository;
@@ -19,14 +17,12 @@ export type Adapter = {
 
 export const buildAdapter = (params: AdapterParams): Adapter => {
   const userRepository = buildUserRepository(params);
-  const exampleGateway = buildExampleGateway(params);
   const taskRepository = buildTaskRepository(params);
   const voteRepository = buildVoteRepository(params);
   const taskStatusRepository = buildTaskStatusRepository(params);
   const taskCategoryRepository = buildTaskCategoryRepository(params);
   return {
     userRepository,
-    exampleGateway,
     taskRepository,
     voteRepository,
     taskCategoryRepository,

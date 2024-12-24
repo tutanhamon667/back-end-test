@@ -1,10 +1,8 @@
 import { Adapter } from '@/domain/types';
 import { Prisma } from '@prisma/client';
-import { DefaultArgs } from '@prisma/client/runtime/library';
-import { CreateTask, GetTask, FilterTasks } from './tasks';
+import { CreateTask,  FilterTasks } from '@/domain/entity/task';
 export type TaskService = {
   create: CreateTask;
-  get: GetTask;
   list: FilterTasks;
 };
 
@@ -30,27 +28,6 @@ export function buildTaskService(adapter: Adapter): TaskService {
     }
   };
 
-  /**
-   * Gets a task by id.
-   *
-   * @param {string} id - The id of the task to get.
-   * @returns {Promise<ITask | null>} The task or null if not found.
-   */
-  const get: GetTask = async (id: string) => {
-    try {
-      const getArgs: Prisma.TaskFindFirstArgs<DefaultArgs> = {
-        where: {
-          id: {
-            equals: id,
-          },
-        },
-      };
-      return await adapter.taskRepository.get(getArgs) || null;
-    } catch (error) {
-      console.error('Error getting task:', error);
-      throw new Error('Task retrieval failed');
-    }
-  };
   const list: FilterTasks = async (params: Prisma.TaskFindManyArgs) => {
     try {
       const tasks = await adapter.taskRepository.list(params);
@@ -63,7 +40,7 @@ export function buildTaskService(adapter: Adapter): TaskService {
   
   return {
     create,
-    get,
+
     list,
   };
 }

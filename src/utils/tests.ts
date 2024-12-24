@@ -3,9 +3,6 @@ import { Adapter } from '@/adapter';
 export const buildTestAdapter = (): Adapter => ({
   taskRepository: {
     create: jest.fn(),
-    get: jest.fn(),
-    update: jest.fn(),
-    remove: jest.fn(),
     list: jest.fn(),
   },
   userRepository: {
@@ -26,9 +23,6 @@ export const buildTestAdapter = (): Adapter => ({
   },
   taskStatusRepository: {
     create: jest.fn(),
-    remove: jest.fn(),
-    get: jest.fn(),
     list: jest.fn(),
-    update: jest.fn(),
   },
 });

@@ -30,9 +30,6 @@ export interface ITaskStatus extends TaskStatus {
 export type TaskStatusRepository = {
   create: TaskStatusCreate;
   list: TaskStatusList;
-  get: TaskStatusGet;
-  remove: TaskStatusRemove;
-  update: TaskStatusUpdate;
 };
 
 /**
